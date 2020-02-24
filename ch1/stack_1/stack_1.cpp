@@ -15,27 +15,21 @@ int main() {
 		getline(cin, str);
 
 		for (char ch : str) {
-		
 			if (ch != ' ') {
 				stk.push_back(ch);
 			}
 			else{
 				while (!stk.empty()) {
 					cout << stk.back();
-
 					stk.pop_back();
 				}
 				cout << " ";
-
 			}
 		}
 		while (!stk.empty()) {
 			cout << stk.back();
-
 			stk.pop_back();
 		}
 		cout << "\n";
-		
 	}
-
 }
