@@ -13,7 +13,7 @@ int main() {
 		nums[i] = true; //소수임
 	}
 	nums[1] = false;
-	for (int i = 2; i < N + 1; i++) {
+	for (int i = 2; i < N + 1; i++) {  //i*i<N+1 까지 하면 됨
 		if (nums[i] == true) {
 			int n = 2;
 			while (i*n<=N) {
