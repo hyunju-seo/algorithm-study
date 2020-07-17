@@ -23,7 +23,7 @@ void go(int index, string num) {
     }
     for (int i = 0; i <= 9; i++) {
         if (check[i]) continue;
-        if (index == 0 || good(num[index - 1], i + '0', a[index - 1])) {
+        if (index == 0 || good(num[index - 1], i + '0', a[index - 1])) {  // 문자인 숫자와 ex) '0', 숫자를 비교할 때 ex) 9 => '0' < 9+'0' ascii로 비교
             check[i] = true;
             go(index + 1, num + to_string(i));
             check[i] = false;
