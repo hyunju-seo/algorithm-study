@@ -1,37 +1,52 @@
 #include<iostream>
-#include<vector>
-#include<algorithm>
+#include<cstring>
 using namespace std;
+int seq[100001];
+int rl[100001];
+int lr[100001];
+int n;
+int left(int idx) {
+	int& ret = lr[idx];
+	if (idx == 0) {
+		ret = seq[idx];
+		return ret;
+	}
+	if (lr[idx] != -1) return ret;
+	ret = max( seq[idx], left(idx - 1) +seq[idx]);
 
-int main(){
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	int n;
+	return ret;
+}
+
+int right(int idx) {
+	int& ret = rl[idx];
+	if (idx == n - 1) {
+		ret = seq[idx];
+		return ret;
+	}
+	if (rl[idx] != -1) return ret;
+	ret = max(seq[idx], right(idx + 1) + seq[idx]);
+
+	return ret;
+}
+
+int main() {
 	cin >> n;
-	vector<int> a(n);
-	vector<int> d(n);   //i에서 끝나는 가장 큰 연속 합
-	vector<int> d2(n);   //i에서 시작하는 가장 큰 연속합                                                    		cin >> a[i];
-
-	for(int i = 0; i < n; i++) {
-		cin >> a[i];
+	memset(rl, -1, sizeof(rl));
+	memset(lr, -1, sizeof(lr));
+	for (int i = 0; i < n; i++) {
+		cin >> seq[i];
 	}
+	left(n - 1);
+	right(0);
+	
+	
+	int ans = lr[0];
+	for (int i = 0; i < n; i++) {
+		ans = max(ans, lr[i]);
 
-	d[0] = a[0];
-	for (int i = 1; i < n; i++) {
-		d[i] = max(d[i - 1] + a[i], a[i]);
-	}
-	d2[n - 1] = a[n - 1];
-	for (int i = n - 2; i >= 0; i--) {
-		d2[i]= max(d2[i + 1] + a[i], a[i]);
-	}
-
-	int ans = d[0];   //첫 시도에서 ans=0으로 시작해서 틀림
-	                  //ans=0으로 하면 모든 수가 - 일 경우 예외 발생
-	for (int i = 1; i < n; i++) {
-		ans = max(d[i], ans);
 	}
 	for (int i = 1; i < n-1; i++) {
-		ans = max(ans, d[i - 1] + d2[i + 1]);
+		ans = max(ans, lr[i - 1] + rl[i + 1]);
 	}
-	cout << ans<<"\n";
+	cout << ans;
 }

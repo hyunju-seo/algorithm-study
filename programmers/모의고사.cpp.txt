@@ -1,0 +1,33 @@
+#include <string>
+#include <vector>
+#include<algorithm>
+using namespace std;
+int one[5]={1,2,3,4,5};
+int two[8]={2, 1, 2, 3, 2, 4, 2, 5};
+int three[10]={3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
+vector<int> solution(vector<int> answers) {
+    vector<int> answer;
+    int firstsum=0; //이렇게 하지말고 배열을 사용하자구나!
+    int firstidx=0;
+    int secondsum=0;
+    int secondidx=0;
+    int thirdsum=0;
+    int thirdidx=0;
+    for(auto a: answers){
+//여기도 배열 사용
+//나머지를 이용
+        if(firstidx>=sizeof(one)/sizeof(int))firstidx=0;
+        if(secondidx>=sizeof(two)/sizeof(int))secondidx=0;
+
+        if(thirdidx>=sizeof(three)/sizeof(int))thirdidx=0;
+
+        if(a==one[firstidx++]) firstsum+=1;
+        if(a==two[secondidx++]) secondsum+=1;
+        if(a==three[thirdidx++]) thirdsum+=1;
+    }
+    int maxans=max({firstsum,secondsum,thirdsum});
+    if(firstsum==maxans) answer.push_back(1);
+    if(secondsum==maxans) answer.push_back(2);
+    if(thirdsum==maxans) answer.push_back(3);
+    return answer;
+}
