@@ -1,3 +1,4 @@
+//https://programmers.co.kr/learn/courses/30/lessons/42840
 #include <string>
 #include <vector>
 #include<algorithm>
@@ -7,7 +8,7 @@ int two[8]={2, 1, 2, 3, 2, 4, 2, 5};
 int three[10]={3, 3, 1, 1, 2, 2, 4, 4, 5, 5};
 vector<int> solution(vector<int> answers) {
     vector<int> answer;
-    int firstsum=0; //이렇게 하지말고 배열을 사용하자구나!
+    int firstsum=0; 
     int firstidx=0;
     int secondsum=0;
     int secondidx=0;
