@@ -6,7 +6,7 @@ https://algospot.com/judge/problem/list/
 알고리즘 문제 해결 전략 1, 2  
   
 
-## baekjoo
+## baekjoon
 https://www.acmicpc.net/
 
 백준 온라인 저지
