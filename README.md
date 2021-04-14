@@ -10,7 +10,6 @@ https://algospot.com/judge/problem/list/
 https://www.acmicpc.net/
 
 백준 온라인 저지  
-  
 
 ## basic
 기본 알고리즘 및 자료구조 구현  
