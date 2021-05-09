@@ -1,114 +1,92 @@
 #include<iostream>
-#include<algorithm>
+#include<vector>
 #include<queue>
 #include<cstring>
+#include<algorithm>
+int map[101][101];
+int group[101][101];
 using namespace std;
-int s = 0;
-int map[105][105]; //섬 or 바다 표시
-int color[105][105];  //섬의 종류
+int dx[] = { 0,0,1,-1 };
+int dy[] = { 1,-1,0,0 };
 int n;
-int a = 0;
-bool checked[105][105]; //다리 후보로 고려됨
-int step[105][105];
-int dx[] = { 0,1,0,-1 };
-int dy[] = { 1,0,-1,0 };
-void bridge(int x,int y, int c) {
-	//cout <<"color "<< c << endl;
-	queue<pair<int,int>> que;
-	step[x][y] = 1;
-	que.push({ x,y });
-	while (!que.empty()) {
-		int x = que.front().first;
-		int y = que.front().second;
-		que.pop();
-		for (int i = 0; i < 4; i++) {
-			int nextX = x + dx[i];
-			int nextY = y + dy[i];
-			if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n) continue;
-			if (map[nextX][nextY] != 0 && color[nextX][nextY] != c) {
-				//cout << "color " <<s color[nextX][nextY] << endl;
-				a = step[x][y];
-				return; }
-			if (map[nextX][nextY] == 0 && step[nextX][nextY]==0) {
-				que.push({ nextX,nextY });
-
-				step[nextX][nextY] = step[x][y] + 1;
-			}
-			
-
-		}
-	}
-}
-void bfs(int x, int y) {
+int bridge[101][101];
+void bfs(int x, int y, int groupnum) {
+	group[x][y] = groupnum;
 	queue<pair<int, int>> que;
-	color[x][y] = s;
 	que.push({ x,y });
 	while (!que.empty()) {
 		int x = que.front().first;
 		int y = que.front().second;
 		que.pop();
 		for (int i = 0; i < 4; i++) {
-			int nextX = x + dx[i];
-			int nextY = y + dy[i];
-			if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n) continue;
-			if (map[nextX][nextY] == 1 && color[nextX][nextY] == 0) {
-				que.push({ nextX,nextY });
-				color[nextX][nextY] = s;
-			}
-
+			int nextx = x + dx[i];
+			int nexty = y + dy[i];
+			if (nextx < 0 || nexty < 0 || nextx >= n || nexty >= n) continue;
+			if (map[nextx][nexty] != 1) continue;
+			if (group[nextx][nexty] != 0) continue;
+			group[nextx][nexty] = groupnum;
+			que.push({ nextx, nexty });
 		}
 	}
 }
-
 
 int main() {
-
 	cin >> n;
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cin >> map[i][j];
 		}
 	}
+	int groupNum = 1;
 	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++)
-		{
-			if (color[i][j] == 0 && map[i][j] == 1) {
-				s++;
-				bfs(i, j);
+		for (int j = 0; j < n; j++) {
+			if (map[i][j] == 1 && group[i][j] == 0) {
+				bfs(i, j, groupNum);
+				groupNum += 1;
 			}
 		}
 	}
-	if (s == 1) {
-		cout << 0 << endl;
-		return 0;
-	}
-	
-	int candi = -1;
-	for (int x = 0; x < n; x++) {
-		for (int y = 0; y < n; y++) {
-			if (color[x][y] == 0) continue;
+	int ans = 1000000000;
+	for (int g = 1; g <= groupNum; g++) {
+		queue<pair<int, int>> bq;
+		memset(bridge, 0, sizeof(bridge));
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if (group[i][j] == g) {
+					for (int t = 0; t < 4; t++) {
+						int nextx = i + dx[t];
+						int nexty = j + dy[t];
+						if (nextx < 0 || nexty < 0 || nextx >= n || nexty >= n) continue;
+						if (map[nextx][nexty] == 1) continue;
+						bq.push({ nextx, nexty });
+						bridge[nextx][nexty] = 1;
+
+					}
+				}
+			}
+		}
+
+		while (!bq.empty()) {
+			int x = bq.front().first;
+			int y = bq.front().second;
+			bq.pop();
 			for (int i = 0; i < 4; i++) {
-				int nextX = x + dx[i];
-				int nextY = y + dy[i];
-				if (nextX < 0 || nextX >= n || nextY < 0 || nextY >= n) continue;
-				if (map[nextX][nextY] != 0 || checked[nextX][nextY] == true) continue;
-				checked[nextX][nextY] = true;
-				a = 0;
-				memset(step, 0, sizeof(step));
-				bridge(nextX, nextY, color[x][y]);
-				//cout << endl;
-
-				//for (int kr = 0; kr < n; kr++) {
-				//	for (int kb = 0; kb < n; kb++) {
-				//		cout << step[kr][kb] << " ";
-				//	}cout << endl;
-				//}
-				//cout << endl;
-				if (candi == -1) candi = a;
-				else candi = min(a, candi);
+				int nextx = x + dx[i];
+				int nexty = y + dy[i];
+				if (nextx < 0 || nexty < 0 || nextx >= n || nexty >= n) continue;
+				if (map[nextx][nexty] == 1) {
+					if (group[nextx][nexty] != g) {
+						ans = min(ans, bridge[x][y]);
+					}
+					continue;
+				}
+				if (bridge[nextx][nexty] != 0) continue;
+				bridge[nextx][nexty] = bridge[x][y] + 1;
+				bq.push({ nextx, nexty });
 			}
 		}
+
 	}
 
-	cout << candi;
+	cout << ans << "\n";
 }

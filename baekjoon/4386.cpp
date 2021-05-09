@@ -1,57 +1,47 @@
-
 #include<iostream>
+#include<vector>
 #include<queue>
 #include<cmath>
-
 using namespace std;
-vector<pair<int, int>> stars;
 bool visited[101];
-
-double distance(int x, int y, int x1, int y1) {
-	return sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
-}
-struct node {
-	int nodeNum;
+struct Node {
+	int idx;
 	double distance;
-	bool operator < (const node &other)const {
+	bool operator<(const Node& other) const {
 		return distance > other.distance;
 	}
 };
+
+double distance(int x, int y, int x1, int y1) {
+	double dis = (x - x1) * (x - x1) + (y - y1) * (y - y1);
+	return sqrt(dis);
+}
+
 int main() {
 	int n;
 	cin >> n;
+	vector<pair<double, double>> stars(n);
 	for (int i = 0; i < n; i++) {
-		double x, y;
-		cin >> x >> y;
-		stars.push_back({ x,y });
+		cin >> stars[i].first >> stars[i].second;
+
 	}
-	priority_queue<node> que;
 	visited[0] = true;
+	priority_queue<Node> que;
 	for (int i = 1; i < n; i++) {
-		double dis = distance(stars[0].first, stars[0].second, stars[i].first, stars[i].second);
-		que.push(node{i , dis });
+		que.push({ i,distance(stars[0].first, stars[0].second, stars[i].first, stars[i].second) });
 	}
 	double ans = 0;
 	while (!que.empty()) {
-		node f = que.top();
-		//cout << f.nodeNum <<" " <<f.distance << endl;
+		Node q = que.top();
 		que.pop();
-		if (visited[f.nodeNum]) continue;
-		ans += f.distance;
-		visited[f.nodeNum] = true;
+		if (visited[q.idx])continue;
+		visited[q.idx] = true;
+		ans += q.distance;
 		for (int i = 0; i < n; i++) {
 			if (visited[i]) continue;
-			double dis = distance(stars[f.nodeNum].first, stars[f.nodeNum].second, stars[i].first, stars[i].second);
-			que.push(node{ i,dis });
-			//cout << "que.push: " <<i << " " << dis << endl;
+			que.push({ i, distance(stars[i].first, stars[i].second, stars[q.idx].first, stars[q.idx].second) });
 		}
-
 	}
-
 	printf("%.2f", ans);
 
-	
-
-
 }
-
